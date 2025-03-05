@@ -1,0 +1,10 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 1.0.5
+_src_path: gh:algorandfoundation/algokit-python-template
+author_email: pashrick237@students.uonbi.ac.ke
+author_name: PatrickOjiambo
+contract_name: atlantic
+deployment_language: python
+preset_name: starter
+project_name: atlantic
+
