@@ -18,6 +18,7 @@ import {
 import { addStudentWalletToDB } from "@/server-actions/creations";
 import { connectWalletSchema } from "@/validation/students";
 import { useWallet } from "@txnlab/use-wallet";
+import { error } from "console";
 const ConnectWalletForm = () => {
   const form = useForm<z.infer<typeof connectWalletSchema>>({
     resolver: zodResolver(connectWalletSchema),
@@ -38,6 +39,7 @@ const ConnectWalletForm = () => {
         walletAddress: activeAddress,
       };
       await addStudentWalletToDB(data);
+      
       toast.success(" Successfully added your wallet details");
       form.reset({
         registrationNumber: "",

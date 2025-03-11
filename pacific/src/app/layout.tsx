@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { siteConfig } from "../../config/site-config";
 import { Toaster } from "sonner";
-import { AppBar } from "@/components/app-bar";
 import "./globals.css";
 import CustomProvider from "./provider";
 
@@ -31,7 +30,6 @@ export default function RootLayout({
           <UserProvider>
             <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
               <NavBar />
-              <AppBar />
             </div>
             {children}
           </UserProvider>

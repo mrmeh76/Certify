@@ -52,7 +52,7 @@ async function transferNft(
     });
     return xferTxn;
   } catch (e: any) {
-    console.log("Error occure during transfer nft");
+    console.log("Error occured during transfer nft");
     throw new Error("Error occured during transfer nft", e);
   }
 }

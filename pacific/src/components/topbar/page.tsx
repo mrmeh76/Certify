@@ -18,13 +18,13 @@ function DashboardTopBar() {
   return (
     <div
       className={clsx(
-        "flex flex-row items-center justify-between w-11/12 border-b-[1px] border-b-neutral-50 rounded-lg  px-4 py-6 bg-black text-white mt-5 mb-2",
+        "flex flex-row items-center justify-between w-11/12 border-b-[1px] border-b-neutral-50 rounded-lg  px-4 py-6 bg-blue-800 text-white mt-16 mb-2",
       )}
     >
       <BackButton />
       <div className="ml-16 flex flex-row items-center justify-start w-full space-x-2">
         <span className="text-xl decoration-4 font-bold font-mono">
-          <p>Welcome to Pacify</p>
+          <p>Welcome to Certify</p>
         </span>
       </div>
 

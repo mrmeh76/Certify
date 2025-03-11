@@ -57,7 +57,7 @@ function VerifyCertificate() {
   return (
     <>
       <DashboardTopBar />
-      <div className="w-11/12 h-fit  transition-all flex flex-col items-center justify-start gap-y-4 bg-black p-6 rounded-lg shadow-lg">
+      <div className="w-11/12 h-fit  transition-all flex flex-col items-center justify-start gap-y-4 p-6 rounded-lg border-2-slate-900 shadow-md">
         <div className="flex flex-row items-center justify-between w-full gap-x-3">
           <Input
             value={search.universityName}
@@ -77,7 +77,7 @@ function VerifyCertificate() {
             <Search />
           </Button>
         </div>
-        <p className="w-full text-left text-neutral-50">
+        <p className="w-full text-left text-slate-700">
           The certificate will be displayed below :
         </p>
         <div className="flex flex-col w-full items-center gap-y-5">

@@ -17,8 +17,9 @@ export async function createTeachingInstitution(
   values: CreateTeachingInstitution
 ): Promise<void> {
   const { name, walletAddress, asset_index, transaction_hash } = values;
+  const docId = name.toLowerCase().replace(/ /g, '-');
   try {
-    await setDoc(doc(db, "teaching-institution", name), {
+    await setDoc(doc(db, "teaching-institution", docId), {
       walletAddress,
       asset_index,
       transaction_hash,

@@ -1,18 +1,16 @@
-import algosdk from "algosdk"
+import algosdk from "algosdk";
 
 export const config = {
+  algodToken: "",
+  algodServer: "https://testnet-api.algonode.cloud", // Testnet endpoint
+  algodPort: 443,
+  indexerToken: "",
+  indexerServer: "https://testnet-idx.algonode.cloud", // Testnet indexer
+  indexerPort: "",
+};
 
-    algodToken: "",
-
-    algodServer: "https://mainnet-api.algonode.cloud",
-
-    algodPort: 443,
-
-    indexerToken: "",
-
-    indexerServer: "https://testnet-idx.algonode.network",
-
-    indexerPort: "",
-
-}
-export const client = new algosdk.Algodv2(config.algodToken, config.algodServer, config.algodPort);
+export const client = new algosdk.Algodv2(
+  config.algodToken,
+  config.algodServer,
+  config.algodPort
+);

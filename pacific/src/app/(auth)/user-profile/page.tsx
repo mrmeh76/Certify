@@ -8,10 +8,9 @@ async function ProfilePage() {
       <DashboardTopBar />
       <div className="flex flex-col items-center justify-centet space-y-10 px-2 pb-[100px] w-11/12">
         <div className="flex flex-row items-center  w-full">
-          {/*<Link href="./verify-certificate" legacyBehavior>
-            <Button>View certificates</Button>
-          </Link>*/}
-          <OptInButton />
+          <OptInButton /> <p>If you already have an account</p> 
+          {/* <p>Or you can <link href="/user-profile">create a student account</link> if you don't have one</p> */}
+
         </div>
         {/* Profile */}
         <UserProfile />

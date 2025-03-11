@@ -4,11 +4,11 @@ export async function POST(request: Request) {
     const { password, email } = await request.json();
     await Mail.sendMail(
       `
-        <h1>Pacify Student Account Details</h1>
+        <h1>Certify Student Account Details</h1>
         <p>This is your password ${password}. Please do not share with anyone else</p>
         <p>Connect your wallet to your student account using the above password</p>
     `,
-      'Pacify <accounts@pacify.co.ke>',
+      'Certify <accounts@pacify.co.ke>',
       email,
       "Student Account Details"
     );

@@ -56,8 +56,12 @@ const CreateInstitutionForm = () => {
       const result = await sendTransactions(signedTxn, waitRoundsToConfirm);
 
       //@ts-ignore
-      const asset_index = result["asset-index"] ?? 1;
+      const asset_index = result.assetIndex || Number(result["asset-index"]) || 0;
+      // console.log(`Asset ID created: ${assetIndex}`);
+      if (!asset_index) throw new Error("Missing asset index");
+      
       const transaction_hash = result.txId;
+      if (!transaction_hash) throw new Error("Missing transaction hash");
 
       const data = {
         name: values.name,
@@ -72,7 +76,12 @@ const CreateInstitutionForm = () => {
         walletAddress: "",
       });
     } catch (error) {
-      toast.error("Unable to create the institution");
+      console.error("Full error details:", error);
+      toast.error(
+        error instanceof Error 
+          ? error.message 
+          : "Failed to create institution"
+      );
     }
   };
   return (
@@ -87,7 +96,7 @@ const CreateInstitutionForm = () => {
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter the name of the institution"
+                    placeholder="Enter Institution Name"
                     {...field}
                   />
                 </FormControl>
@@ -109,7 +118,7 @@ const CreateInstitutionForm = () => {
           />
           <div className="flex  items-center">
             <Button type="submit" className=" my-2" disabled={pending}>
-              Create
+            {pending ? "Creating..." : "Create"}
             </Button>
           </div>
         </div>
