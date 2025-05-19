@@ -19,6 +19,8 @@ import { addStudentWalletToDB } from "@/server-actions/creations";
 import { connectWalletSchema } from "@/validation/students";
 import { useWallet } from "@txnlab/use-wallet";
 import { error } from "console";
+import { isWalletUnique } from "@/server-actions/wallet-validation";
+
 const ConnectWalletForm = () => {
   const form = useForm<z.infer<typeof connectWalletSchema>>({
     resolver: zodResolver(connectWalletSchema),
@@ -34,6 +36,13 @@ const ConnectWalletForm = () => {
         toast.error("please connect your wallet");
         return;
       }
+
+      const isUnique = await isWalletUnique(activeAddress);
+      if (!isUnique) {
+        toast.error("This wallet is already registered");
+        return;
+      }
+
       const data = {
         registrationNumber: values.registrationNumber,
         walletAddress: activeAddress,

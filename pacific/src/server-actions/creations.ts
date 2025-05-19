@@ -1,7 +1,7 @@
 "use server";
 import { collection, addDoc, setDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/db/firebase";
-
+import { isWalletUnique } from "./wallet-validation";
 import z from "zod";
 import { connectWalletSchema } from "@/validation/students";
 import { createInstitutionSchema } from "@/validation/institution";
@@ -16,6 +16,12 @@ interface CreateTeachingInstitution {
 export async function createTeachingInstitution(
   values: CreateTeachingInstitution
 ): Promise<void> {
+
+  const isUnique = await isWalletUnique(values.walletAddress);
+  if (!isUnique) {
+    throw new Error("Wallet already registered");
+  }
+
   const { name, walletAddress, asset_index, transaction_hash } = values;
   const docId = name.toLowerCase().replace(/ /g, '-');
   try {
@@ -25,7 +31,7 @@ export async function createTeachingInstitution(
       transaction_hash,
     });
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Create Teaching Institution";
   }
 }
@@ -40,7 +46,7 @@ export async function createCourse(
       name,
     });
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Create Course";
   }
 }
@@ -58,6 +64,7 @@ interface CreateStudentAccount {
 export async function createStudentAccount(
   values: CreateStudentAccount
 ): Promise<void> {
+
   try {
     const {
       email,
@@ -82,7 +89,7 @@ export async function createStudentAccount(
 
     // Send user email with password
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Create Student Account";
   }
 }
@@ -122,7 +129,7 @@ export async function assignCertificate(
       transaction_hash,
     });
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Assign Certificate";
   }
 }
@@ -135,13 +142,19 @@ interface AddStudentWalletToDB {
 export async function addStudentWalletToDB(
   values: AddStudentWalletToDB
 ): Promise<void> {
+
+  const isUnique = await isWalletUnique(values.walletAddress);
+  if (!isUnique) {
+    throw new Error("Wallet already registered");
+  }
+  
   const { walletAddress, registrationNumber } = values;
   try {
     await updateDoc(doc(db, "students", registrationNumber), {
       walletAddress,
     });
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Add Student's Wallet";
   }
 }
@@ -154,7 +167,7 @@ export async function myCertificates(
       assetIndex,
     });
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not insert transfered certificate";
   }
 }

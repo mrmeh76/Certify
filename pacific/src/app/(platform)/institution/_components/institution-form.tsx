@@ -21,6 +21,9 @@ import algosdk from "algosdk";
 import { useFormStatus } from "react-dom";
 import React, { useState } from "react";
 import { createNft } from "../../../../../nft/create_certificate";
+import router from "next/router";
+import { isWalletUnique } from "@/server-actions/wallet-validation";
+
 const CreateInstitutionForm = () => {
   const form = useForm<z.infer<typeof createInstitutionSchema>>({
     resolver: zodResolver(createInstitutionSchema),
@@ -32,10 +35,17 @@ const CreateInstitutionForm = () => {
   const { activeAddress, signTransactions, sendTransactions } = useWallet();
   const { pending } = useFormStatus();
   const [fileURL, setFileURL] = useState<string>("");
+
   const onSubmit = async (values: z.infer<typeof createInstitutionSchema>) => {
     try {
       if (!activeAddress) {
-        toast.error("please connect your wallet");
+        toast.error("Please connect your wallet");
+        return;
+      }
+
+      const isUnique = await isWalletUnique(activeAddress);
+      if (!isUnique) {
+        toast.error("This wallet is already registered as a student or institution");
         return;
       }
 
@@ -71,10 +81,11 @@ const CreateInstitutionForm = () => {
       };
       await createTeachingInstitution(data);
       toast.success("the institution has been created successfully");
-      form.reset({
-        name: "",
-        walletAddress: "",
-      });
+      router.push("/admin-dashboard");
+      // form.reset({
+      //   name: "",
+      //   walletAddress: "",
+      // });
     } catch (error) {
       console.error("Full error details:", error);
       toast.error(

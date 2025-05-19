@@ -10,6 +10,34 @@ import {
 import { TeachingInstitution } from "@/types/teaching-institution";
 import { Certificate } from "@/types/certificate";
 
+export async function getInstitutionByWallet(
+  wallet_address: string
+): Promise<TeachingInstitution | null> {
+  try {
+    const q = query(
+      collection(db, "teaching-institution"),
+      where("walletAddress", "==", wallet_address)
+    );
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.size === 0) {
+      console.log("No institution found with this wallet address");
+      return null;
+    } else {
+      const institutionDoc = querySnapshot.docs[0];
+      const institutionData = institutionDoc.data();
+
+      return new TeachingInstitution(
+        institutionDoc.id,
+        institutionData.name,
+      );
+    }
+  } catch (err) {
+    console.error("Error fetching institution:", err);
+    throw "Could not get institution data";
+  }
+}
+
 export async function getUserDataFromLogin(
   wallet_address: string
 ): Promise<StudentAccount | TeachingInstitution> {
@@ -44,7 +72,7 @@ export async function getUserDataFromLogin(
       );
     }
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Get Student's Data";
   }
 }
@@ -76,7 +104,7 @@ export async function getUniversityCertificates(
 
     return certificates;
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Get University's Certificate";
   }
 }
@@ -101,14 +129,14 @@ export async function getStudentCertificates(
           data.university_name,
           data.student_reg_number,
           data.certificate_serial_number,
-          data.certificate_image_url
+          data.certificate_image_url,
         )
       );
     });
 
     return certificates;
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Get Student's Certificate";
   }
 }
@@ -134,10 +162,10 @@ export async function searchForCertificate(
       data.university_name,
       data.student_reg_number,
       data.certificate_serial_number,
-      data.certificate_image_url
+      data.certificate_image_url,
     );
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Search For Certificate";
   }
 }
@@ -159,7 +187,7 @@ export async function getCourseNamesForUniversity(
 
     return course_names;
   } catch (err) {
-    console.log(err, "OHH SHIT");
+    console.log(err, "OOps");
     throw "Could Not Get Courses";
   }
 }
@@ -181,8 +209,8 @@ export async function getStudentsForAUniversity(
 
     return students;
   } catch (err) {
-    console.log(err, "OHH SHIT");
-    throw `Could Not Get Students Of ${university_name}`;
+    console.log(err, "OOps");
+    throw `Could Not Get Students Of  institution${university_name}`;
   }
 }
 /**
@@ -220,7 +248,7 @@ export async function getIndexFromDb(
     console.log("Get Index From DB: Asset Data", assetData);
     return assetData[0].asset_index;
   } catch (e: any) {
-    console.log(e, "OHH SHIT");
+    console.log(e, "OOps");
     throw new Error("Error occured during retrieving asset_index", e);
   }
 }

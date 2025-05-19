@@ -4,7 +4,6 @@ import { CardForm } from "@/components/card-form";
 export default function StudentSignUpPage() {
   return (
     <>
-    <BackButton/>
     <div className="">
       <CardForm
         title={"Create Student Account"}
