@@ -11,6 +11,7 @@ function CertificateDetails({
 }: {
   certificate: Record<string, any>;
 }) {
+  console.log("Full certificate object:", certificate);
   return (
     <div className="grid  w-full justify-center p-2 rounded-sm ring-1 ring-amber-100 shadow-md">
       {/* Certificate Cover */}
@@ -18,7 +19,7 @@ function CertificateDetails({
         <Image
           src={certificate.params.url}
           layout="fill"
-          objectFit="cover"
+          objectFit="fit"
           alt="certificate"
         />
 
@@ -26,7 +27,7 @@ function CertificateDetails({
       </div>
       {/* Certificate  transaction id*/}
       <Button variant={"secondary"}>
-        <Link href={`https://app.dappflow.org/explorer/transaction/${certificate.tx_hash}`}>View Transaction</Link>
+        <Link href={`https://algo.surf/transaction/${certificate.tx_hash}`}>View Transaction</Link>
       </Button>
     </div>
   );

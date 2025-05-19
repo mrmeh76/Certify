@@ -1,4 +1,3 @@
-
 "use client"
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -16,6 +15,7 @@ import algosdk from "algosdk";
 import { toast } from "sonner";
 import { assignCertificate } from "@/server-actions/creations";
 import { universityCourses } from '@/constants/courses';
+import Image from 'next/image';
 
 const formSchema = z.object({
     registrationNo: z.string(),
@@ -31,6 +31,7 @@ type Schema = z.infer<typeof formSchema>;
 function CreateStore() {
     const { activeAddress, signTransactions, sendTransactions } = useWallet();
     const [fileURL, setFileURL] = useState<string>("");
+    const [fileName, setFileName] = useState<string>("");
     const [loading, setLoading] = useState(false)
     //const { toast } = useToast()
     //const session = useSession();
@@ -237,22 +238,39 @@ function CreateStore() {
                             }}
                         /> */}
 
-                            <p>Image:</p>
-                            <UploadButton
-                                className="ut-button:bg-primary"
-                                endpoint="imageUploader"
-                                onClientUploadComplete={(res) => {
-                                    setFileURL(res[0].url);
-                                    toast.success("file uploaded");
-                                }}
-                                onUploadError={(error: Error) => {
-                                    toast.error(error.message);
-                                }}
-                            />
+                            <div className="flex items-center gap-4">
+                                <div>
+                                    <p>Image:</p>
+                                    <UploadButton
+                                        className="ut-button:bg-primary"
+                                        endpoint="imageUploader"
+                                        onClientUploadComplete={(res) => {
+                                            setFileURL(res[0].url);
+                                            toast.success("file uploaded");
+                                        }}
+                                        onUploadError={(error: Error) => {
+                                            toast.error(error.message);
+                                        }}
+                                    />
+                                </div>
+                                {fileURL && (
+                                    <div className="mt-6">
+                                        <div className="relative w-10 h-10 overflow-hidden border">
+                                            <Image
+                                                src={fileURL}
+                                                alt="Uploaded preview"
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </div>
+                                        <p className="text-xs text-muted-foreground text-gray-400 mt-1">Preview</p>
+                                    </div>
+                                )}
+                            </div>
 
-                            <FormControl    >
-                                <Button type="submit" className=" my-2">
-                                    Create
+                            <FormControl>
+                                <Button type="submit" className="my-2" disabled={loading}>
+                                    {loading ? "Processing..." : "Create"}
                                 </Button>
                             </FormControl>
                         </form>

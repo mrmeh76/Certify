@@ -8,12 +8,13 @@ import DashboardTopBar from "@/components/topbar/page";
 import { getCertificate } from "../../../../nft/get_certificate";
 import {toast} from "sonner";
 import CertificateDetails from "@/components/certificate-details";
-
+import { useInstitution } from "@/hooks/useInstitution";
 
 function AdminPage() {
   const [certificate, setCertificate] = useState<Record<string, any>>();
   const [searchLoading, setSearchLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
+  const { institution } = useInstitution();
 
   const handleSearch = () => {
     setSearchLoading(true);
@@ -28,7 +29,6 @@ function AdminPage() {
     try {
       const certificate = await getCertificate(serial_number);
       console.log(certificate);
-
       setCertificate(certificate);
       setSearch("");
     } catch (e) {
@@ -42,18 +42,16 @@ function AdminPage() {
       <div className="flex flex-col w-11/12 items-center pt-5 gap-y-4">
       <div>
       <Link href="./sign-up" legacyBehavior>
-          <Button className="mr-4">Create Student Account</Button>
+          <Button className="mr-4">[Students] Create Student Account</Button>
         </Link>
       <Link href="./send-nft" legacyBehavior>
           <Button className="mr-4">Send NFT</Button>
         </Link>
         <Link href="./create-course" legacyBehavior>
-          <Button>Create a new course</Button>
+          <Button>[Courses] Create a new course</Button>
         </Link>
       </div>
-        <h3 className="font-semibold text-xl w-full">
-          Certificates you have issued
-        </h3>
+        
         
         <Link href="/assign-certificate" legacyBehavior>
           <div className="flex cursor-pointer shadow-sm hover:bg-slate-100 flex-col items-center justify-center w-full rounded-md h-[100px] ring-1 ring-amber-50 ">
@@ -62,6 +60,9 @@ function AdminPage() {
           </div>
         </Link>
 
+      <h3 className="font-semibold text-xl w-full">
+                Certificates issued by {institution?.name}
+              </h3>
         <div className="flex flex-row w-full items-center justify-between gap-x-4">
           <div className="flex flex-row items-center justify-center gap-x-3 w-4/5 ">
             <Input

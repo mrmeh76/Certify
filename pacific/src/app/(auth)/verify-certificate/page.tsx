@@ -58,14 +58,7 @@ function VerifyCertificate() {
     <>
       <DashboardTopBar />
       <div className="w-11/12 h-fit  transition-all flex flex-col items-center justify-start gap-y-4 p-6 rounded-lg border-2-slate-900 shadow-md">
-        <div className="flex flex-row items-center justify-between w-full gap-x-3">
-          <Input
-            value={search.universityName}
-            onChange={(e) =>
-              setSearch({ ...search, universityName: e.target.value })
-            }
-            placeholder="Enter University Name"
-          />
+        <div className="flex flex-row items-center justify-between w-2/4 gap-x-3">
           <Input
             value={search.serialNumber}
             onChange={(e) =>
