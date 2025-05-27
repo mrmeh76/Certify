@@ -18,13 +18,13 @@ export default function InstitutionPortalPage() {
         <Tabs defaultValue="login" className="w-full max-w-md">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="create">Create Institution</TabsTrigger>
+            <TabsTrigger value="create">Register</TabsTrigger>
           </TabsList>
           
           <TabsContent value="login">
             <Card>
               <CardHeader>
-                <CardTitle>Institution Login</CardTitle>
+                <CardTitle>Login to your Institution</CardTitle>
               </CardHeader>
               <CardContent>
                 <InstitutionLoginForm />
@@ -35,7 +35,7 @@ export default function InstitutionPortalPage() {
           <TabsContent value="create">
             <Card>
               <CardHeader>
-                <CardTitle>Create Institution</CardTitle>
+                <CardTitle>Create a new Institution</CardTitle>
               </CardHeader>
               <CardContent>
                 {activeAddress ? (

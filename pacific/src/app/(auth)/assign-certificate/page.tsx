@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Select, SelectTrigger, SelectContent, SelectItem ,SelectValue} from '@/components/ui/select'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { createNft } from "../../../../nft/create_certificate";
 import { z } from 'zod'
@@ -16,15 +16,19 @@ import { toast } from "sonner";
 import { assignCertificate } from "@/server-actions/creations";
 import { universityCourses } from '@/constants/courses';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { getStudentByRegNumber } from '@/db/getions';
+import { StudentAccount } from '@/types/student';
+import { useInstitution } from '@/hooks/useInstitution';
+
 
 const formSchema = z.object({
     registrationNo: z.string(),
     coursename: z.string(),
     serial_number: z.string(),
-    university_name: z.string()
+    university_name: z.string(),
+    student_name: z.string()
 })
-
-
 
 type Schema = z.infer<typeof formSchema>;
 
@@ -32,14 +36,47 @@ function CreateStore() {
     const { activeAddress, signTransactions, sendTransactions } = useWallet();
     const [fileURL, setFileURL] = useState<string>("");
     const [fileName, setFileName] = useState<string>("");
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [student, setStudent] = useState<StudentAccount | null>(null);
+    const searchParams = useSearchParams();
+    const { institution } = useInstitution();
     //const { toast } = useToast()
     //const session = useSession();
+    
     const form = useForm<Schema>({
-        resolver: zodResolver(formSchema)
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            registrationNo: searchParams.get('student') || '',
+            university_name: institution?.name || '',
+            student_name: '',
+            coursename: '',
+            serial_number: ''
+        }
     })
 
-    
+    useEffect(() => {
+        const fetchStudent = async () => {
+            const regNumber = searchParams.get('student');
+            if (regNumber) {
+                try {
+                    const studentData = await getStudentByRegNumber(regNumber);
+                    setStudent(studentData);
+                    form.setValue('registrationNo', studentData.reg_number);
+                    form.setValue('student_name', studentData.name);
+                    form.setValue('coursename', studentData.course_name);
+                    form.setValue('university_name', institution?.name || '');
+                } catch (error) {
+                    toast.error('Failed to load student data');
+                }
+            }
+        };
+        
+        if (institution?.name) {
+            form.setValue('university_name', institution.name);
+        }
+
+        fetchStudent();
+    }, [searchParams, institution, form]);
 
     const onSubmit = async (values: Schema) => {
         console.log("Values", values)
@@ -102,80 +139,94 @@ function CreateStore() {
         <>
             <DashboardTopBar />
             <div className="flex flex-col w-full h-full items-center  justify-center ">
-                <div className="flex flex-row items-center justify-start w-full">
-                </div>
                 <div className="flex flex-col w-4/5  h-full items-center justify-center px-5 ">
                     <h3 className='text-xl font-semibold ' >
                         Assign Certificate
                     </h3>
                     <Form {...form} >
                         <form onSubmit={form.handleSubmit(onSubmit)} className='w-full h-full space-y-4' >
-                            {/* university name */}
+                            {/* Student Name */}
+                            <FormField
+                                control={form.control}
+                                name='student_name'
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Student Name</FormLabel>
+                                        <FormControl>
+                                            <Input 
+                                                {...field} 
+                                                readOnly 
+                                                className="text-gray-500"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* University Name */}
                             <FormField
                                 control={form.control}
                                 name='university_name'
-                                render={({ field }) => {
-                                    return (
-                                        <FormItem>
-                                            <FormLabel>
-                                                University Name
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input {...field} placeholder='University Name' type=" string" />
-                                            </FormControl>
-
-                                            <FormMessage />
-                                        </FormItem>
-                                    )
-                                }}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>University Name</FormLabel>
+                                        <FormControl>
+                                            <Input 
+                                                {...field} 
+                                                readOnly 
+                                                className="text-gray-500"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
                             />
                             
-                            {/* registration number */}
+                            {/* Registration Number */}
                             <FormField
                                 control={form.control}
                                 name='registrationNo'
-                                render={({ field }) => {
-                                    return (
-                                        <FormItem>
-                                            <FormLabel>
-                                                Student&apos;s Registration Number
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input {...field} placeholder='Reg no' type=" string" />
-                                            </FormControl>
-
-                                            <FormMessage />
-                                        </FormItem>
-                                    )
-                                }}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Registration Number</FormLabel>
+                                        <FormControl>
+                                            <Input 
+                                                {...field} 
+                                                readOnly 
+                                                className="text-gray-500"
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
                             />
 
-                            {/* Course Name */}<FormField
-            control={form.control}
-            name="coursename"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Course Name</FormLabel>
-                <Select onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a course" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {universityCourses.map((course, index) => (
-                      <SelectItem key={index} value={course}>
-                        {course}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-
+                            {/* Course Name */}
+                            <FormField
+                                control={form.control}
+                                name="coursename"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Course Name</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a course" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {universityCourses.map((course, index) => (
+                                                    <SelectItem key={index} value={course}>
+                                                        {course}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
                             {/* Serial number */}
                             <FormField

@@ -41,14 +41,14 @@ function AdminPage() {
       <DashboardTopBar />
       <div className="flex flex-col w-11/12 items-center pt-5 gap-y-4">
       <div>
-      <Link href="./sign-up" legacyBehavior>
-          <Button className="mr-4">[Students] Create Student Account</Button>
+      <Link href="/admin-dashboard/students" legacyBehavior>
+          <Button className="mr-4">Manage Students</Button>
         </Link>
       <Link href="./send-nft" legacyBehavior>
           <Button className="mr-4">Send NFT</Button>
         </Link>
         <Link href="./create-course" legacyBehavior>
-          <Button>[Courses] Create a new course</Button>
+          <Button>Manage Courses</Button>
         </Link>
       </div>
         

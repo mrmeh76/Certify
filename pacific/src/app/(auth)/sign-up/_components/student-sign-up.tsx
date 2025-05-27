@@ -25,15 +25,17 @@ import { createStudentAccount } from "@/server-actions/creations";
 import { createStudentSchema } from "@/validation/students";
 import axios from 'axios';
 import { useWallet } from "@txnlab/use-wallet";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import algosdk from "algosdk";
 import { createNft } from "../../../../../nft/create_certificate";
 import { UploadButton } from "@/components/uploadthing/uploadthing";
 import { universityCourses } from "@/constants/courses";
+import { getInstitutionByWallet } from "@/db/getions";
+import { useInstitution } from "@/hooks/useInstitution";
 
 const StudentSignUpForm = () => {
   const { activeAddress, signTransactions, sendTransactions } = useWallet();
-
+  const { institution, loading } = useInstitution();
   const [fileURL, setFileURL] = useState<string>("");
 
   const form = useForm<z.infer<typeof createStudentSchema>>({
@@ -42,7 +44,7 @@ const StudentSignUpForm = () => {
       email: "",
       name: "",
       registrationNumber: "",
-      universityName: "",
+      universityName: institution?.name || "",
       courseName: "",
     },
   });
@@ -99,6 +101,13 @@ const StudentSignUpForm = () => {
       toast.error("Unable to create the account");
     }
   };
+
+  useEffect(() => {
+  if (institution?.name) {
+    form.setValue("universityName", institution.name);
+  }
+}, [institution, form]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -159,8 +168,10 @@ const StudentSignUpForm = () => {
                 <FormLabel>University Name</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter the name of the university"
                     {...field}
+                    value={institution?.name}
+                    readOnly
+                    className="text-gray-900 font-semibold  bg-slate-200 cursor-not-allowed"
                   />
                 </FormControl>
                 <FormMessage />

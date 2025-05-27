@@ -2,13 +2,34 @@ import { StudentAccount } from "@/types/student";
 import { db } from "./firebase";
 import {
   collection,
+  doc,
   DocumentData,
+  getDoc,
   getDocs,
   query,
   where,
 } from "firebase/firestore";
 import { TeachingInstitution } from "@/types/teaching-institution";
 import { Certificate } from "@/types/certificate";
+
+// Add to src/db/getions.ts
+export async function getStudentByRegNumber(
+  regNumber: string
+): Promise<StudentAccount> {
+  try {
+    const docRef = doc(db, "students", regNumber);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      throw new Error("Student not found");
+    }
+
+    return StudentAccount.fromFirebaseDocument(docSnap);
+  } catch (err) {
+    console.log(err, "OOps");
+    throw "Could Not Get Student Data";
+  }
+}
 
 export async function getInstitutionByWallet(
   wallet_address: string

@@ -17,8 +17,7 @@ export default function CustomProvider({ children }: { children: React.ReactNode
     providers: [
       { 
         id: PROVIDER_ID.PERA, 
-        clientStatic: PeraWalletConnect,
-        clientOptions: { chainId: 416002 } // Testnet config
+        clientStatic: PeraWalletConnect
       },
       { 
         id: PROVIDER_ID.DEFLY, 

@@ -1,8 +1,8 @@
 // pacific/src/hooks/useInstitution.ts
 "use client"
 import { useEffect, useState } from 'react';
-import { getInstitutionByWallet } from '@/db/getions';
 import { useWallet } from '@txnlab/use-wallet';
+import { getInstitutionByWallet } from '@/db/getions';
 import { TeachingInstitution } from '@/types/teaching-institution';
 
 export function useInstitution() {
