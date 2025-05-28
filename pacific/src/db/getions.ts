@@ -121,7 +121,7 @@ export async function getUniversityCertificates(
           data.certificate_serial_number,
           data.certificate_image_url,
           data.issue_date,
-          data.tx_hash
+          data.transaction_hash
         ),
       );
     });
@@ -156,7 +156,7 @@ export async function getStudentCertificates(
           data.certificate_serial_number,
           data.certificate_image_url,
           data.issue_date,
-          data.tx_hash
+          data.transaction_hash
         )
       );
     });

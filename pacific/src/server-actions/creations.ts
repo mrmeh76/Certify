@@ -58,6 +58,7 @@ interface CreateStudentAccount {
   courseName: string;
   asset_index: number;
   transaction_hash: string;
+  image_url: string;
 }
 
 export async function createStudentAccount(
@@ -73,6 +74,7 @@ export async function createStudentAccount(
       courseName,
       asset_index,
       transaction_hash,
+      image_url
     } = values;
     const password = "someRandomBS";
     await setDoc(doc(db, "students", registrationNumber), {
@@ -84,11 +86,12 @@ export async function createStudentAccount(
       courseName,
       asset_index,
       transaction_hash,
+      image_url
     });
 
     // Send user email with password
   } catch (err) {
-    console.log(err, "OOps");
+    console.log("Error in creating student account",err);
     throw "Could Not Create Student Account";
   }
 }

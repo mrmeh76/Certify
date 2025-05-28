@@ -20,8 +20,10 @@ import { connectWalletSchema } from "@/validation/students";
 import { useWallet } from "@txnlab/use-wallet";
 import { getStudentsForAUniversity } from "@/db/getions";
 import { isWalletUnique } from "@/server-actions/wallet-validation";
+import { useRouter } from "next/navigation";
 
 const ConnectWalletForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof connectWalletSchema>>({
     resolver: zodResolver(connectWalletSchema),
     defaultValues: {
@@ -63,6 +65,7 @@ const ConnectWalletForm = () => {
       await addStudentWalletToDB(data);
       
       toast.success(" You have successfully claimed your account");
+      router.push("/user-profile");
       form.reset({
         registrationNumber: "",
         universityName: "",

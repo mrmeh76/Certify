@@ -36,10 +36,10 @@ function CertificateDetails({ certificate }: { certificate: Certificate
             </div>
           </div>
           
-          {certificate.tx_hash && (
+          {certificate.transaction_hash && (
             <Button asChild variant="outline" className="w-full">
               <Link
-                href={`https://algo.surf/transaction/${certificate.tx_hash}`}
+                href={`https://algo.surf/transaction/${certificate.transaction_hash}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

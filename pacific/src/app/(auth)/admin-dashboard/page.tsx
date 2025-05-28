@@ -5,13 +5,14 @@ import { PlusIcon, Search } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 import DashboardTopBar from "@/components/topbar/page";
-import { getCertificate } from "../../../../nft/get_certificate";
+import { searchForCertificate } from "@/db/getions";
 import {toast} from "sonner";
 import CertificateDetails from "@/components/certificate-details";
 import { useInstitution } from "@/hooks/useInstitution";
+import { Certificate } from "@/types/certificate";
 
 function AdminPage() {
-  const [certificate, setCertificate] = useState<Record<string, any>>();
+  const [certificate, setCertificate] = useState<Certificate | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
   const [search, setSearch] = useState<string>("");
   const { institution } = useInstitution();
@@ -19,20 +20,23 @@ function AdminPage() {
   const handleSearch = () => {
     setSearchLoading(true);
     if (search === undefined) {
-      toast.error("insert serial number");
+      toast.error("Please insert serial number");
     }
+    setSearchLoading(true);
     loadStoreData(search);
-    setSearchLoading(false);
   };
 
   const loadStoreData = async (serial_number: string) => {
     try {
-      const certificate = await getCertificate(serial_number);
+      const certificate = await searchForCertificate(serial_number, institution?.name);
       console.log(certificate);
       setCertificate(certificate);
       setSearch("");
     } catch (e) {
       // ignore
+    }
+    finally {
+      setSearchLoading(false);
     }
   };
 
@@ -51,14 +55,6 @@ function AdminPage() {
           <Button>Manage Courses</Button>
         </Link>
       </div>
-        
-        
-        <Link href="/assign-certificate" legacyBehavior>
-          <div className="flex cursor-pointer shadow-sm hover:bg-slate-100 flex-col items-center justify-center w-full rounded-md h-[100px] ring-1 ring-amber-50 ">
-            <PlusIcon />
-            <span>Issue a new certificate</span>
-          </div>
-        </Link>
 
       <h3 className="font-semibold text-xl w-full">
                 Certificates issued by {institution?.name}

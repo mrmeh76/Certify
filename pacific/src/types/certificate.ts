@@ -8,6 +8,6 @@ export class Certificate {
     public certificate_serial_number: string,
     public certificate_image_url: string,
     public issue_date: string, // Add this field
-    public tx_hash?: string
+    public transaction_hash?: string
   ) {}
 }

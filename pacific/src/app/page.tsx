@@ -16,13 +16,13 @@ export default function Home() {
       </div>
       <div className="flex flex-row items-center justify-center space-x-10">
         <div className="flex flex-row items-center justify-center rounded-lg ring-1 ring-amber overflow-hidden transform rotate-12 ">
-          <Image src="/gold.png" width={200} height={200} alt="over-network" />
+          <Image src="/gold.png" width={200} height={200} alt="over-network" priority />
         </div>
         <div className="flex flex-row items-end h-full">
           <XIcon />
         </div>
         <div className="flex flex-row items-center justify-center rounded-lg ring-1 ring-amber overflow-hidden transform -rotate-6">
-          <Image src="/cert.jpg" width={300} height={200} alt="denv" />
+          <Image src="/cert.jpg" width={300} height={200} alt="denv" priority unoptimized={true} />
         </div>
       </div>
       <div className="flex flex-row items-center justify-center">
