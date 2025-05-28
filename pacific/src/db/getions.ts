@@ -116,9 +116,12 @@ export async function getUniversityCertificates(
         new Certificate(
           data.course_name,
           data.university_name,
+          data.student_name,
           data.student_reg_number,
           data.certificate_serial_number,
           data.certificate_image_url,
+          data.issue_date,
+          data.tx_hash
         ),
       );
     });
@@ -148,9 +151,12 @@ export async function getStudentCertificates(
         new Certificate(
           data.course_name,
           data.university_name,
+          data.student_name,
           data.student_reg_number,
           data.certificate_serial_number,
           data.certificate_image_url,
+          data.issue_date,
+          data.tx_hash
         )
       );
     });
@@ -164,30 +170,54 @@ export async function getStudentCertificates(
 
 export async function searchForCertificate(
   serial_number: string,
-  university_name: string
-): Promise<Certificate | void> {
+  university_name: string = ""
+): Promise<Certificate | null> {
   try {
-    const q = query(
-      collection(db, "certificate"),
-      where("certificate_serial_number", "==", serial_number),
-      where("university_name", "==", university_name)
-    );
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.size === 0) {
-      return;
+    // Debug: Log what we're searching for
+    console.log(`Searching for cert: ${serial_number} from ${university_name}`);
+    
+    let q;
+    if (university_name) {
+      q = query(
+        collection(db, "certificate"),
+        where("certificate_serial_number", "==", serial_number),
+        where("university_name", "==", university_name)
+      );
+    } else {
+      q = query(
+        collection(db, "certificate"),
+        where("certificate_serial_number", "==", serial_number)
+      );
     }
-    const data = querySnapshot.docs[0].data();
+
+    const querySnapshot = await getDocs(q);
+    
+    // Debug: Log how many documents were found
+    console.log(`Found ${querySnapshot.size} matching certificates`);
+    
+    if (querySnapshot.empty) {
+      return null;
+    }
+
+    const doc = querySnapshot.docs[0];
+    const data = doc.data();
+    
+    // Debug: Log the found certificate data
+    console.log("Certificate data:", data);
+    
     return new Certificate(
       data.course_name,
       data.university_name,
+      data.student_name || "Unknown",
       data.student_reg_number,
       data.certificate_serial_number,
       data.certificate_image_url,
+      data.issue_date,
+      data.transaction_hash
     );
   } catch (err) {
-    console.log(err, "OOps");
-    throw "Could Not Search For Certificate";
+    console.error("Certificate search error:", err);
+    throw "Could not search for certificate";
   }
 }
 

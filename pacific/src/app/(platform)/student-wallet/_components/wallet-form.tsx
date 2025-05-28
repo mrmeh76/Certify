@@ -18,7 +18,7 @@ import {
 import { addStudentWalletToDB } from "@/server-actions/creations";
 import { connectWalletSchema } from "@/validation/students";
 import { useWallet } from "@txnlab/use-wallet";
-import { error } from "console";
+import { getStudentsForAUniversity } from "@/db/getions";
 import { isWalletUnique } from "@/server-actions/wallet-validation";
 
 const ConnectWalletForm = () => {
@@ -26,6 +26,7 @@ const ConnectWalletForm = () => {
     resolver: zodResolver(connectWalletSchema),
     defaultValues: {
       registrationNumber: "",
+      universityName: "",
     },
   });
   const { activeAddress } = useWallet();
@@ -33,7 +34,7 @@ const ConnectWalletForm = () => {
   const onSubmit = async (values: z.infer<typeof connectWalletSchema>) => {
     try {
       if (!activeAddress) {
-        toast.error("please connect your wallet");
+        toast.error("Please connect your wallet");
         return;
       }
 
@@ -43,15 +44,28 @@ const ConnectWalletForm = () => {
         return;
       }
 
+      // Verify student exists in the specified university
+      const students = await getStudentsForAUniversity(values.universityName);
+      const studentExists = students.some(
+        student => student.reg_number === values.registrationNumber
+      );
+
+      if (!studentExists) {
+        toast.error("No student found with this registration number in the specified university");
+        return;
+      }
+
       const data = {
         registrationNumber: values.registrationNumber,
+        universityName: values.universityName,
         walletAddress: activeAddress,
       };
       await addStudentWalletToDB(data);
       
-      toast.success(" Successfully added your wallet details");
+      toast.success(" You have successfully claimed your account");
       form.reset({
         registrationNumber: "",
+        universityName: "",
       });
     } catch (error) {
       toast.error("Something went wrong");
@@ -69,7 +83,7 @@ const ConnectWalletForm = () => {
                 <FormLabel>Registration Number</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter the registration Number"
+                    placeholder="Enter your registration Number"
                     {...field}
                   />
                 </FormControl>
@@ -78,8 +92,24 @@ const ConnectWalletForm = () => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="universityName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Institution Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your insitution name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button type="submit" className="w-full">
-            Connect wallet
+            Submit
           </Button>
         </div>
       </form>

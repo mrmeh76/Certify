@@ -2,80 +2,79 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DashboardTopBar from "@/components/topbar/page";
 import CertificateDetails from "@/components/certificate-details";
-import { getCertificate } from "../../../../nft/get_certificate";
+import { searchForCertificate } from "@/db/getions";
 import { toast } from "sonner";
-
-import { getUserDataFromLogin } from "@/db/getions";
-import { getTxIdFromSerial } from "@/db/getions";
+import { Certificate } from "@/types/certificate";
 
 function VerifyCertificate() {
-  const [certificate, setCertificate] = useState<Record<string, any>>();
-  const [txid, setTxid] = useState<string>("");
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [search, setSearch] = useState<{
-    serialNumber: string;
-    universityName: string;
-  }>({ serialNumber: "", universityName: "" });
+  const [certificate, setCertificate] = useState<Certificate | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState({
+    serialNumber: "",
+    universityName: ""
+   });
 
-
-  const handleSearch = () => {
-    setSearchLoading(true);
-    if (search === undefined) {
-      toast.error("insert serial number");
+  const handleSearch = async () => {
+    if (!search.serialNumber) {
+      toast.error("Please enter a serial number");
+      return;
     }
-    loadStoreData(search.serialNumber);
-    setSearchLoading(false);
-  };
 
-  const loadStoreData = async (serial_number: string) => {
+  setLoading(true);
     try {
-      const certificate = await getCertificate(serial_number);
-      console.log(certificate);
-
-      setCertificate(certificate);
-
-      
-      //geting the transaction id of the cert creation
-      const txid = await getTxIdFromSerial(serial_number);
-      setTxid(txid);
-      //Adding the transaction id to the certificate object
-      setCertificate(prevState => ({
-        ...prevState,
-        tx_hash: txid,
-      }));
-
-      setSearch({ serialNumber: "", universityName: "" });
-
-    } catch (e) {
-      // ignore
+      const cert = await searchForCertificate(
+        search.serialNumber,
+        search.universityName
+      );
+      if (cert) {
+        setCertificate(cert);
+      } else {
+        toast.error("Certificate not found");
+        setCertificate(null);
+      }
+    } catch (error) {
+      toast.error("Failed to verify certificate");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <DashboardTopBar />
-      <div className="w-11/12 h-fit  transition-all flex flex-col items-center justify-start gap-y-4 p-6 rounded-lg border-2-slate-900 shadow-md">
-        <div className="flex flex-row items-center justify-between w-2/4 gap-x-3">
+      <div className="w-11/12 max-w-4xl mx-auto p-6 rounded-lg border shadow-md">
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
           <Input
             value={search.serialNumber}
             onChange={(e) =>
               setSearch({ ...search, serialNumber: e.target.value })
             }
-            placeholder="Search for certificate by serial number..."
+            placeholder="Certificate serial number"
+            className="flex-1"
           />
-          <Button onClick={handleSearch}>
-            <Search />
+          <Input
+            value={search.universityName}
+            onChange={(e) =>
+              setSearch({ ...search, universityName: e.target.value })
+            }
+            placeholder="University name (optional)"
+            className="flex-1"
+          />
+          <Button onClick={handleSearch} disabled={loading}>
+            {loading ? "Searching..." : <Search className="mr-2" />}
+            Verify
           </Button>
         </div>
-        <p className="w-full text-left text-slate-700">
-          The certificate will be displayed below :
-        </p>
-        <div className="flex flex-col w-full items-center gap-y-5">
-          {certificate && <CertificateDetails certificate={certificate} />}
-        </div>
+
+        {certificate && (
+          <div className="mt-4">
+            <CertificateDetails certificate={certificate} />
+          </div>
+        )}
       </div>
     </>
   );

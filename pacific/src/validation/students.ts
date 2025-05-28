@@ -14,4 +14,5 @@ export const connectWalletSchema = z.object({
   registrationNumber: z
     .string()
     .min(10, { message: "Invalid registration number" }),
+  universityName: z.string().min(2, { message: "University name is required" }),  
 });

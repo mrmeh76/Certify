@@ -1,10 +1,8 @@
 "use server";
-import { collection, addDoc, setDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, getDoc, setDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "@/db/firebase";
 import { isWalletUnique } from "./wallet-validation";
-import z from "zod";
-import { connectWalletSchema } from "@/validation/students";
-import { createInstitutionSchema } from "@/validation/institution";
+import { getStudentsForAUniversity } from "@/db/getions";
 
 interface CreateTeachingInstitution {
   name: string;
@@ -107,7 +105,6 @@ interface AssignCertificate {
 
 export async function assignCertificate(
   values: AssignCertificate
-
 ): Promise<void> {
   try {
     const {
@@ -120,6 +117,10 @@ export async function assignCertificate(
       transaction_hash,
     } = values
 
+    // First get student details
+    const studentDoc = await getDoc(doc(db, "students", student_reg_number));
+    const studentData = studentDoc.exists() ? studentDoc.data() : null;
+
     await addDoc(collection(db, "certificate"), {
       course_name,
       university_name,
@@ -128,6 +129,8 @@ export async function assignCertificate(
       certificate_image_url,
       asset_index,
       transaction_hash,
+      issue_date: new Date().toISOString(), // Add current timestamp
+      student_name: studentData?.name || "Unknown",
     });
   } catch (err) {
     console.log(err, "OOps");
@@ -137,19 +140,30 @@ export async function assignCertificate(
 
 interface AddStudentWalletToDB {
     registrationNumber: string;
+    universityName: string;
     walletAddress: string;
 }
 
 export async function addStudentWalletToDB(
   values: AddStudentWalletToDB
 ): Promise<void> {
+  const { walletAddress, registrationNumber, universityName } = values;
 
   const isUnique = await isWalletUnique(values.walletAddress);
   if (!isUnique) {
     throw new Error("Wallet already registered");
   }
   
-  const { walletAddress, registrationNumber } = values;
+  // 2. Verify student exists in the university
+  const students = await getStudentsForAUniversity(universityName);
+  const studentExists = students.some(
+    student => student.reg_number === registrationNumber
+  );
+  
+  if (!studentExists) {
+    throw new Error("Student not found in the specified university");
+  }
+  
   try {
     await updateDoc(doc(db, "students", registrationNumber), {
       walletAddress,
