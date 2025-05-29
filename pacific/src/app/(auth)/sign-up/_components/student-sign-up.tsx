@@ -298,7 +298,7 @@ const StudentSignUpForm = () => {
                     </div>
                   ) : (
                     <UploadButton
-                      className="ut-button:bg-blue-800 ut-button:hover:bg-blue-600"
+                      className="ut-allowed-content:hidden ut-button:bg-blue-600 ut-button:hover:bg-blue-700 ut-button:transition-all"
                       endpoint="imageUploader"
                       onUploadBegin={() => {
                         setIsUploading(true);
@@ -318,6 +318,7 @@ const StudentSignUpForm = () => {
                         setUploadProgress(0);
                         toast.error(error.message);
                       }}
+                      
                     />
                   )}
                 </div>

@@ -9,6 +9,7 @@ interface CreateTeachingInstitution {
   walletAddress: string;
   asset_index: number;
   transaction_hash: string;
+  image_url: string;
 }
 
 export async function createTeachingInstitution(
@@ -28,6 +29,7 @@ export async function createTeachingInstitution(
       walletAddress,
       asset_index,
       transaction_hash,
+      image_url: values.image_url
     });
   } catch (err) {
     console.log(err, "OOps");

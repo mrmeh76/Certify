@@ -15,7 +15,7 @@ export default function InstitutionPortalPage() {
     <>
       <DashboardTopBar />
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 pb-10 w-full">
-        <Tabs defaultValue="login" className="w-full max-w-md">
+        <Tabs defaultValue="login" className="w-full max-w-2xl">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="create">Register</TabsTrigger>
@@ -32,12 +32,7 @@ export default function InstitutionPortalPage() {
             </Card>
           </TabsContent>
           
-          <TabsContent value="create">
-            <Card>
-              <CardHeader>
-                <CardTitle>Create a new Institution</CardTitle>
-              </CardHeader>
-              <CardContent>
+          <TabsContent value="create">     
                 {activeAddress ? (
                   <CreateInstitutionForm />
                 ) : (
@@ -48,8 +43,6 @@ export default function InstitutionPortalPage() {
                     </Button>
                   </div>
                 )}
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </div>

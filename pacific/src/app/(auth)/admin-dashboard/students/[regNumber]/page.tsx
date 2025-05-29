@@ -6,6 +6,7 @@ import { getStudentByRegNumber } from "@/db/getions";
 import { StudentAccount } from "@/types/student";
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 export default function StudentDetailsPage({
   params,
@@ -19,7 +20,6 @@ export default function StudentDetailsPage({
     const fetchStudent = async () => {
       try {
         setLoading(true);
-        // You'll need to implement getStudentByRegNumber in getions.ts
         const data = await getStudentByRegNumber(params.regNumber);
         setStudent(data);
       } catch (error) {
@@ -49,20 +49,51 @@ export default function StudentDetailsPage({
         {loading ? (
           <div>Loading...</div>
         ) : student ? (
-          <div className="w-full space-y-4">
-            <h1 className="text-2xl font-bold">{student.name}</h1>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h2 className="font-semibold">Registration Number</h2>
-                <p>{student.reg_number}</p>
+          <div className="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Student Image */}
+              <div className="flex-shrink-0">
+                {student.image_url ? (
+                  <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-gray-100 shadow-md">
+                    <Image
+                      src={student.image_url}
+                      alt={student.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-gray-200 border-2 border-dashed rounded-full w-48 h-48 flex items-center justify-center">
+                    <span className="text-gray-500">No image</span>
+                  </div>
+                )}
               </div>
-              <div>
-                <h2 className="font-semibold">Course</h2>
-                <p>{student.course_name}</p>
-              </div>
-              <div>
-                <h2 className="font-semibold">University</h2>
-                <p>{student.university_name}</p>
+              
+              {/* Student Details */}
+              <div className="flex-grow">
+                <h1 className="text-2xl font-bold mb-4">{student.name}</h1>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h2 className="font-semibold text-gray-600">Registration Number</h2>
+                    <p className="text-lg">{student.reg_number}</p>
+                  </div>
+                  
+                  <div>
+                    <h2 className="font-semibold text-gray-600">Email</h2>
+                    <p className="text-lg">{student.email}</p>
+                  </div>
+                  
+                  <div>
+                    <h2 className="font-semibold text-gray-600">Course</h2>
+                    <p className="text-lg">{student.course_name}</p>
+                  </div>
+                  
+                  <div>
+                    <h2 className="font-semibold text-gray-600">University</h2>
+                    <p className="text-lg">{student.university_name}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

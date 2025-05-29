@@ -44,7 +44,7 @@ function AdminPage() {
     <>
       <DashboardTopBar />
       <div className="flex flex-col w-11/12 items-center pt-5 gap-y-4">
-      <div>
+      {/* <div>
       <Link href="/admin-dashboard/students" legacyBehavior>
           <Button className="mr-4">Manage Students</Button>
         </Link>
@@ -54,7 +54,7 @@ function AdminPage() {
         <Link href="./create-course" legacyBehavior>
           <Button>Manage Courses</Button>
         </Link>
-      </div>
+      </div> */}
 
       <h3 className="font-semibold text-xl w-full">
                 Certificates issued by {institution?.name}

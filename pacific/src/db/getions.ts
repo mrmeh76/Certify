@@ -51,6 +51,7 @@ export async function getInstitutionByWallet(
       return new TeachingInstitution(
         institutionDoc.id,
         institutionData.name,
+        institutionData.image_url
       );
     }
   } catch (err) {
@@ -89,7 +90,8 @@ export async function getUserDataFromLogin(
 
       return new TeachingInstitution(
         institutionDoc.id,
-        institutionData.walletAddress
+        institutionData.walletAddress,
+        institutionData.image_url
       );
     }
   } catch (err) {

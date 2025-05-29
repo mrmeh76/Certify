@@ -28,7 +28,7 @@
     "@tanstack/react-table": "^8.21.3",
     "@txnlab/use-wallet": "^2.8.1",
     "@types/nodemailer": "^6.4.14",
-    "@uploadthing/react": "^6.4.4",
+    "@uploadthing/react": "^7.3.1",
     "@walletconnect/modal-sign-html": "^2.6.2",
     "algosdk": "^2.7.0",
     "axios": "^1.6.8",
@@ -48,7 +48,7 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "update": "^0.7.4",
-    "uploadthing": "^6.9.0",
+    "uploadthing": "^7.7.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {

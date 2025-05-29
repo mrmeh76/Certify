@@ -5,10 +5,21 @@ import React from "react";
 import { useInstitution } from "@/hooks/useInstitution";
 import { useRouter } from "next/navigation";
 import BackButton from "../back-button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 function DashboardTopBar() {
   const router = useRouter();
   const { institution, loading } = useInstitution();
+  const pathname = usePathname();
+
+  // Menu items for institution dashboard
+  const menuItems = [
+    { name: "Manage Students", href: "/admin-dashboard/students" },
+    { name: "Send NFT", href: "/send-nft" },
+    { name: "Manage Courses", href: "/create-course" },
+  ];
 
   return (
     <div
@@ -17,7 +28,23 @@ function DashboardTopBar() {
       )}
     >
       <BackButton />
-      <div className="ml-16 flex flex-row items-center justify-start w-full space-x-2">
+
+      {/* Navigation Menu */}
+      <div className="flex items-center space-x-6">
+        {institution && menuItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-green-300",
+              pathname === item.href ? "text-white" : ""
+            )}
+          >
+            {item.name}
+          </Link>
+        ))}
+      </div>
+      {/* <div className="ml-16 flex flex-row items-center justify-start w-full space-x-2">
         <span className="text-xl decoration-4 font-bold font-mono">
           {loading ? (
             <p>Loading...</p>
@@ -27,11 +54,11 @@ function DashboardTopBar() {
             <p>Welcome to Certify</p>
           )}
         </span>
-      </div>
+      </div> */}
 
-      <div className="flex flex-row items-center justify-center cursor-pointer hover:bg-neutral-400 group p-2 rounded-full">
+      <div className="flex flex-row items-center justify-center cursor-pointer hover:bg-gray-100 group p-2 rounded-full">
         <LogOut
-          className="group-hover:text-neutral-100"
+          className="group-hover:text-gray-800 text-gray-400"
           onClick={() => {
             router.push("/");
           }}

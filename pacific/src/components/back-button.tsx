@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 function BackButton() {
     const { back } = useRouter()
   return (
-    <Button onClick={()=>back()} variant={"ghost"} className='gap-x-3' >
+    <Button onClick={()=>back()} variant={"ghost"} className='text-gray-400 gap-x-3' >
         <ArrowLeft/>
         <span>
             Back

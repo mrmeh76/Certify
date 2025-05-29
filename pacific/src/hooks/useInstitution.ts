@@ -16,7 +16,12 @@ export function useInstitution() {
                 setLoading(true);
                 try {
                     const data = await getInstitutionByWallet(activeAddress);
-                    setInstitution(data);
+                    if (data) {
+                        setInstitution({
+                            ...data,
+                            image_url: data.image_url || ""
+                        });
+                    }
                 } catch (error) {
                     console.error("Failed to fetch institution:", error);
                 } finally {

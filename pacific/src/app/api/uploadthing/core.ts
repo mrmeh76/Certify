@@ -7,7 +7,7 @@ export const ourFileRouter = {
   imageUploader: f({ image: { maxFileSize: "4MB" } })
     .onUploadComplete(async ({ metadata, file }) => { 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { fileURL: file.url };
+      return { fileURL: file.ufsUrl };
     }),
 } satisfies FileRouter;
  
