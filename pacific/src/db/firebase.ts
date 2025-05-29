@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-//import {initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check"
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -14,8 +13,4 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// const appCheck = initializeAppCheck(app, {
-//     provider: new ReCaptchaEnterpriseProvider(process.env.NEXT_PUBLIC_RECAPTCHA ?? ""),
-//     isTokenAutoRefreshEnabled: true
-// });
 export const db = getFirestore(app);
