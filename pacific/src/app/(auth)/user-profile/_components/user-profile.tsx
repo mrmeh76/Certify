@@ -154,7 +154,7 @@ export const UserProfile = () => {
           ) : certificates.length === 0 ? (
             <div className="text-center py-6">
               <p className="text-muted-foreground">
-                No certificates found. You haven't been issued any certificates yet.
+                No certificates found. You haven&apos;t been issued any certificates yet.
               </p>
             </div>
           ) : (
