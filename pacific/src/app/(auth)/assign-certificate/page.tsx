@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { createNft } from "../../../../nft/create_certificate";
 import { z } from 'zod'
+import { Suspense } from 'react'
 import DashboardTopBar from '@/components/topbar/page'
 import { useWallet } from "@txnlab/use-wallet";
 import { UploadButton } from "@/components/uploadthing/uploadthing";
@@ -32,6 +33,16 @@ const formSchema = z.object({
 })
 
 type Schema = z.infer<typeof formSchema>;
+
+function AssignCertificateWrapper() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  </div>}>
+      <CreateStore />
+    </Suspense>
+  )
+}
 
 function CreateStore() {
     const { activeAddress, signTransactions, sendTransactions } = useWallet();
@@ -408,4 +419,4 @@ function CreateStore() {
     )
 }
 
-export default CreateStore;
+export default AssignCertificateWrapper;
